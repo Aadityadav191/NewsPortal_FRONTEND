@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -8,36 +8,58 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const categories = [
-    { name: 'Entertainment', path: '/entertainment' },
-    { name: 'Finance', path: '/finance' },
-    { name: 'Sports', path: '/sports' },
+    { name: "Entertainment", path: "/entertainment" },
+    { name: "Finance", path: "/finance" },
+    { name: "Sports", path: "/sports" },
     // { name: 'Others', path: '/news/others' },
   ];
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate("/auth/login");
     setIsOpen(false);
+  };
+
+  const handleDashboardNavigation = () => {
+    switch (user?.role) {
+      case "AUTHOR":
+        navigate("/authors/dashboard");
+        break;
+      case "ADMIN":
+        navigate("/admin/dashboard");
+        break;
+      case "SUPER_ADMIN":
+        navigate("/superadmin/dashboard");
+        break;
+    }
   };
 
   return (
     <nav className="bg-slate-900 text-white sticky top-0 z-50 shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          
           {/* Logo / Branding */}
           <div className="shrink-0">
-            <Link to="/" className="text-xl font-bold tracking-wider text-blue-400">
+            <Link
+              to="/"
+              className="text-xl font-bold tracking-wider text-blue-400"
+            >
               NEWS<span className="text-white">PORTAL</span>
             </Link>
           </div>
 
           {/* Desktop Navigation Links */}
           <div className="hidden md:flex space-x-4 items-center">
-            <Link to="/" className="hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium transition">
+            <Link
+              to="/"
+              className="hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium transition"
+            >
               Home
             </Link>
-            <Link to="/news" className="hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium transition">
+            <Link
+              to="/news"
+              className="hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium transition"
+            >
               All News
             </Link>
 
@@ -63,10 +85,21 @@ const Navbar = () => {
                 <span className="text-xs bg-slate-800 border border-slate-700 px-2 py-1 rounded text-slate-300 capitalize">
                   {user.role}
                 </span>
-                <span className="text-sm text-slate-300">Hi, {user.name.split(' ')[0]}</span>
+
+                <span className="text-sm text-slate-300">
+                  Hi, {user.name.split(" ")[0]}
+                </span>
+
+                <button
+                  onClick={handleDashboardNavigation}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-md text-sm font-semibold transition cursor-pointer"
+                >
+                  Dashboard
+                </button>
+
                 <button
                   onClick={handleLogout}
-                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-md text-sm font-semibold transition"
+                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-md text-sm font-semibold transition cursor-pointer"
                 >
                   Logout
                 </button>
@@ -92,12 +125,32 @@ const Navbar = () => {
             >
               <span className="sr-only">Open main menu</span>
               {isOpen ? (
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               ) : (
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
                 </svg>
               )}
             </button>
@@ -106,7 +159,10 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Drawer Slideout Menu Panel */}
-      <div className={`${isOpen ? 'block' : 'hidden'} md:hidden bg-slate-850 border-t border-slate-800`} id="mobile-menu">
+      <div
+        className={`${isOpen ? "block" : "hidden"} md:hidden bg-slate-850 border-t border-slate-800`}
+        id="mobile-menu"
+      >
         <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
           <Link
             to="/"
@@ -124,7 +180,9 @@ const Navbar = () => {
           </Link>
 
           <div className="border-t border-slate-800 my-2 pt-2">
-            <p className="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Categories</p>
+            <p className="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              Categories
+            </p>
             {categories.map((cat) => (
               <Link
                 key={cat.name}
@@ -141,8 +199,12 @@ const Navbar = () => {
             {user ? (
               <div className="flex flex-col space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-slate-300">{user.name}</span>
-                  <span className="text-xs bg-slate-700 px-2 py-0.5 rounded uppercase text-slate-300">{user.role}</span>
+                  <span className="text-sm font-medium text-slate-300">
+                    {user.name}
+                  </span>
+                  <span className="text-xs bg-slate-700 px-2 py-0.5 rounded uppercase text-slate-300">
+                    {user.role}
+                  </span>
                 </div>
                 <button
                   onClick={handleLogout}
