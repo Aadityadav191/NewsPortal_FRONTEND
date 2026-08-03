@@ -1,18 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { PublishedArticles } from "../api/services/published.service";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
-  const categories = [
-    { name: "Entertainment", path: "/entertainment" },
-    { name: "Finance", path: "/finance" },
-    { name: "Sports", path: "/sports" },
-    // { name: 'Others', path: '/news/others' },
-  ];
+  // Dynamic categories state
+  const [categories, setCategories] = useState([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+
+  // Fetch dynamic categories from API
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setCategoriesLoading(true);
+        const response = await PublishedArticles();
+        const articles = response.data?.data || response.data || [];
+
+        // Extract unique non-empty categories
+        const extractedCategories = [
+          ...new Set(articles.map((a) => a.category).filter(Boolean)),
+        ];
+
+        setCategories(extractedCategories);
+      } catch (err) {
+        console.error("Failed to load navbar categories:", err);
+      } finally {
+        setCategoriesLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -30,6 +52,8 @@ const Navbar = () => {
         break;
       case "SUPER_ADMIN":
         navigate("/superadmin/dashboard");
+        break;
+      default:
         break;
     }
   };
@@ -49,33 +73,35 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Navigation Links */}
-          <div className="hidden md:flex space-x-4 items-center">
+          <div className="hidden md:flex space-x-2 items-center">
             <Link
               to="/"
               className="hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium transition"
             >
               Home
             </Link>
-            <Link
-              to="/news"
-              className="hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium transition"
-            >
-              All News
-            </Link>
 
             {/* Category Dropdown Menu Divider */}
             <div className="h-4 w-px bg-slate-700 mx-2"></div>
 
-            {/* Render categories inline on desktop */}
-            {categories.map((cat) => (
-              <Link
-                key={cat.name}
-                to={cat.path}
-                className="text-slate-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition"
-              >
-                {cat.name}
-              </Link>
-            ))}
+            {/* Render Dynamic Categories on Desktop */}
+            {categoriesLoading ? (
+              <div className="flex items-center space-x-2 animate-pulse">
+                <div className="h-6 w-16 bg-slate-800 rounded"></div>
+                <div className="h-6 w-20 bg-slate-800 rounded"></div>
+                <div className="h-6 w-16 bg-slate-800 rounded"></div>
+              </div>
+            ) : (
+              categories.map((cat) => (
+                <Link
+                  key={cat}
+                  to={`/news?category=${encodeURIComponent(cat.toLowerCase())}`}
+                  className="text-slate-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition capitalize"
+                >
+                  {cat}
+                </Link>
+              ))
+            )}
           </div>
 
           {/* Desktop Auth Section */}
@@ -87,7 +113,7 @@ const Navbar = () => {
                 </span>
 
                 <span className="text-sm text-slate-300">
-                  Hi, {user.name.split(" ")[0]}
+                  Hi, {user.name?.split(" ")[0]}
                 </span>
 
                 <button
@@ -114,14 +140,14 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile Hamburguer Toggle Trigger Menu */}
+          {/* Mobile Hamburger Toggle Trigger Menu */}
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
               type="button"
               className="inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 focus:outline-none"
               aria-controls="mobile-menu"
-              aria-expanded="false"
+              aria-expanded={isOpen}
             >
               <span className="sr-only">Open main menu</span>
               {isOpen ? (
@@ -180,24 +206,28 @@ const Navbar = () => {
           </Link>
 
           <div className="border-t border-slate-800 my-2 pt-2">
-            <p className="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+            <p className="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
               Categories
             </p>
-            {categories.map((cat) => (
-              <Link
-                key={cat.name}
-                to={cat.path}
-                onClick={() => setIsOpen(false)}
-                className="block text-slate-400 hover:bg-slate-800 hover:text-white px-3 py-2 rounded-md text-base font-medium"
-              >
-                {cat.name}
-              </Link>
-            ))}
+            {categoriesLoading ? (
+              <div className="px-3 py-2 text-xs text-slate-500">Loading categories...</div>
+            ) : (
+              categories.map((cat) => (
+                <Link
+                  key={cat}
+                  to={`/news?category=${encodeURIComponent(cat.toLowerCase())}`}
+                  onClick={() => setIsOpen(false)}
+                  className="block text-slate-400 hover:bg-slate-800 hover:text-white px-3 py-2 rounded-md text-base font-medium capitalize"
+                >
+                  {cat}
+                </Link>
+              ))
+            )}
           </div>
 
           <div className="border-t border-slate-800 pt-4 pb-2 px-3">
             {user ? (
-              <div className="flex flex-col space-y-2">
+              <div className="flex flex-col space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-slate-300">
                     {user.name}
@@ -207,6 +237,12 @@ const Navbar = () => {
                   </span>
                 </div>
                 <button
+                  onClick={handleDashboardNavigation}
+                  className="w-full bg-blue-600 text-center text-white py-2 rounded-md text-sm font-medium"
+                >
+                  Dashboard
+                </button>
+                <button
                   onClick={handleLogout}
                   className="w-full bg-red-600 text-center text-white py-2 rounded-md text-sm font-medium"
                 >
@@ -215,7 +251,7 @@ const Navbar = () => {
               </div>
             ) : (
               <Link
-                to="/login"
+                to="/auth/login"
                 onClick={() => setIsOpen(false)}
                 className="block w-full text-center bg-blue-600 text-white py-2 rounded-md text-sm font-medium"
               >

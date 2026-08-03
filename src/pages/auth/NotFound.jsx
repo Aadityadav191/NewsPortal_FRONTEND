@@ -22,7 +22,7 @@ export default function NotFound() {
   }, [navigate]);
 
   return (
-    <section className="min-h-[100vh] flex items-center justify-center bg-[#175dfb] px-6">
+    <section className="min-h-[100vh] flex items-center justify-center bg-[#bec1c8] px-6">
       <div className="text-center">
         {/* Animated 404 Header */}
         <p className="text-sm font-bold text-[#0e172b] uppercase tracking-widest">

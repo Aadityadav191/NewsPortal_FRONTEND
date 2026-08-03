@@ -51,7 +51,7 @@ const DashboardHeader = () => {
           <div className="max-w-2xl">
             <div className="flex items-center gap-3 flex-wrap">
               <span className="text-xs font-bold tracking-widest text-slate-400 uppercase">
-                NewsPortal Engine v2.0
+                Control Pannel :
               </span>
               <span className={`px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide border rounded-md ${currentConfig.badgeBg}`}>
                 {user?.role || 'Guest'} Mode
@@ -74,7 +74,7 @@ const DashboardHeader = () => {
       System Status
     </span>
     <div className="flex items-center gap-2 mt-1">
-      <span className="text-sm font-bold text-white">API Connected</span>
+      <span className="text-sm font-bold text-white">Verified</span>
     </div>
   </div>
 
@@ -83,11 +83,11 @@ const DashboardHeader = () => {
       Role Permission
     </span>
     <span className={`text-sm font-bold mt-1 uppercase ${currentConfig.accentText}`}>
-      {user?.role === 'superadmin' ? 'Root Access' : user?.role === 'admin' ? 'Write/Edit' : 'Draft Only'}
+      {user?.role === 'superadmin' ? 'Root Access' : user?.role === 'ADMIN' ? 'Write/Edit' : 'Approve User '}
     </span>
   </div>
 
-  <div className="bg-white/10 backdrop-blur-md rounded-lg p-3 border border-white/10 flex flex-col justify-between col-span-2">
+  <div className="bg-[#362aa5] backdrop-blur-md rounded-lg p-3 border border-white/10 flex flex-col justify-between col-span-2">
     <div className="flex justify-between items-center text-xs">
       <span className="text-slate-300">Logged in as:</span>
       <span className="font-semibold text-white truncate max-w-37.5">{user?.name}</span>
