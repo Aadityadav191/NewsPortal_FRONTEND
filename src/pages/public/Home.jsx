@@ -11,6 +11,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { PublishedArticles } from "../../api/services/published.service";
+import ServerOfflineState from "../../components/ServerOfflineState";
 
 const Home = () => {
   const [articles, setArticles] = useState([]);
@@ -65,23 +66,7 @@ const Home = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col justify-center items-center bg-slate-50 p-4">
-        <div className="bg-white p-8 rounded-3xl border border-red-100 shadow-sm text-center max-w-md">
-          <div className="w-12 h-12 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <Newspaper className="w-6 h-6" />
-          </div>
-          <h2 className="text-xl font-bold text-slate-900 mb-1">
-            Unable to Load News
-          </h2>
-          <p className="text-slate-500 text-sm mb-6">{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="px-5 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-semibold hover:bg-slate-800 transition"
-          >
-            Retry Loading
-          </button>
-        </div>
-      </div>
+      <ServerOfflineState/>
     );
   }
 
