@@ -15,7 +15,7 @@ const ServerErrorState = ({ error }) => {
 
   return (
     <div className=" bg-white flex flex-col justify-center items-center p-4 sm:p-6 select-none font-sans relative overflow-hidden">
-      <div className="w-full max-w-lg bg-white  backdrop-blur-md rounded-3xl p-8 sm:p-10 shadow-2xl relative z-10 text-center flex flex-col items-center">
+      <div className="w-full max-w-lg bg-white  backdrop-blur-md rounded-3xl p-8 sm:p-10  relative z-10 text-center flex flex-col items-center">
         {/* Status Badge */}
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold tracking-wide uppercase mb-6">
           <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
