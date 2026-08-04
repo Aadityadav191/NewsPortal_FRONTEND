@@ -241,7 +241,7 @@ const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
               `}
               title={isCollapsed ? item.label : ""}
             >
-              <span className="flex-shrink-0">{item.icon}</span>
+              <span className="shrink-0">{item.icon}</span>
               {!isCollapsed && <span className="truncate">{item.label}</span>}
             </NavLink>
           ))}

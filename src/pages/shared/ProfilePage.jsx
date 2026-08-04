@@ -58,7 +58,7 @@ const ProfilePage = () => {
                 className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md"
               />
             ) : (
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-500 via-indigo-600 to-purple-600 text-white text-4xl font-extrabold flex items-center justify-center shadow-md border-4 border-white">
+              <div className="w-24 h-24 rounded-full bg-linear-to-br from-indigo-500 via-indigo-600 to-purple-600 text-white text-4xl font-extrabold flex items-center justify-center shadow-md border-4 border-white">
                 {initial}
               </div>
             )}
