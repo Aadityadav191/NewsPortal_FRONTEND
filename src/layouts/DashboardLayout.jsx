@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
-import DashboardHeader from "../components/DashboardHeader";
-import Sidebar from "../components/Sidebar";
+import DashboardHeader from "../components/layout/DashboardHeader";
+import Sidebar from "../components/layout/Sidebar";
 
 export default function DashboardLayout() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);

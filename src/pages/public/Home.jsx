@@ -11,7 +11,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { PublishedArticles } from "../../api/services/published.service";
-import ServerOfflineState from "../../components/ServerOfflineState";
+import ServerOfflineState from "../../components/common/ServerOfflineState";
 
 const Home = () => {
   const [articles, setArticles] = useState([]);
@@ -199,7 +199,7 @@ const Home = () => {
             </div>
 
             {/* Secondary Highlights Sidebar (4 Cols) */}
-            <div className="lg:col-span-4 space-y-4 flex flex-col justify-between">
+            <div className="lg:col-span-4 space-y-4 flex-col justify-between">
               <div className="flex items-center gap-2 pb-2 border-b border-slate-200">
                 <Flame className="w-4 h-4 text-amber-500" />
                 <h3 className="font-bold text-slate-900 text-sm uppercase tracking-wider">

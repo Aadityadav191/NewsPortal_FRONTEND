@@ -39,7 +39,7 @@ const styles = {
     justifyContent: 'center',
     zIndex: 1000,
     padding: '1rem',
-    background: 'rgba(0, 0, 0, 0.5)',
+    // background: 'rgba(0, 0, 0, 0.5)',
   },
   container: {
     maxWidth: 'auto',

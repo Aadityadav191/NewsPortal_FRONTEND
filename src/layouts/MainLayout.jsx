@@ -1,7 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import Navbar from '../components/Navbar';
-import TopBar from '../components/TopBar';
+import Navbar from '../components/layout/Navbar';
+import TopBar from '../components/layout/TopBar';
 
 export default function MainLayout() {
    const currentDate = new Date().toLocaleDateString("en-US", {
