@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { RefreshCw, Home, WifiOff, HelpCircle } from "lucide-react";
-import serverDownImg from "../assets/ServerDown.svg";
+import serverDownImg from "../../assets/ServerDown.svg";
 
 const ServerErrorState = ({ error }) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
