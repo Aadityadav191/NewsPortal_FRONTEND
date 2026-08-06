@@ -358,7 +358,7 @@ const ArticleDetails = () => {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.4 }}
-                className="p-6 rounded-3xl bg-slate-900 text-white space-y-4 text-center border border-slate-800 relative overflow-hidden"
+                className="p-6 rounded-3xl bg-slate-600 text-white space-y-4 text-center border border-slate-800 relative overflow-hidden"
               >
                 <span className="text-[10px] uppercase font-extrabold tracking-widest text-slate-400 bg-slate-800 px-2 py-0.5 rounded">
                   Advertisement
