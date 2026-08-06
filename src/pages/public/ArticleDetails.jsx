@@ -253,7 +253,7 @@ const ArticleDetails = () => {
                     <img
                       src={article.featuredImage}
                       alt={article.title}
-                      className="w-full h-[350px] sm:h-[480px] object-cover"
+                      className="w-full h-87.5 sm:h-120 object-cover"
                     />
                     <div className="p-2 bg-slate-900/60 backdrop-blur-md absolute bottom-0 inset-x-0 text-[11px] text-slate-200 text-center">
                       Featured Coverage Image | Press Rights Reserved
@@ -284,7 +284,7 @@ const ArticleDetails = () => {
                             whileInView={{ opacity: 1, y: 0 }}
                             initial={{ opacity: 0, y: 15 }}
                             viewport={{ once: true }}
-                            className="my-8 p-6 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-800 text-white shadow-md relative overflow-hidden font-sans"
+                            className="my-8 p-6 rounded-2xl bg-linear-to-r from-slate-900 to-slate-800 text-white shadow-md relative overflow-hidden font-sans"
                           >
                             <span className="absolute top-2 right-3 text-[9px] uppercase font-bold text-slate-400 border border-slate-700 px-1.5 py-0.5 rounded">
                               Sponsored

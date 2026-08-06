@@ -185,7 +185,7 @@ const Home = () => {
                         <Newspaper className="w-16 h-16" />
                       </div>
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent" />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950/80 via-slate-950/20 to-transparent" />
 
                     {heroArticle.category && (
                       <span className="absolute top-4 left-4 bg-blue-600 text-white text-[11px] font-extrabold px-3 py-1 rounded-full uppercase tracking-widest shadow-md">

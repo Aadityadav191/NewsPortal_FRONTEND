@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
 
 // Services
@@ -15,6 +16,27 @@ import {
 } from "../../api/services/admin.service";
 import { getPendingAdmins } from "../../api/services/superadmin.service";
 import { getMyArticles } from "../../api/services/author.service";
+
+// Motion Variants
+const containerStagger = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.05,
+    },
+  },
+};
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 15 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: "easeOut" },
+  },
+};
 
 const UnifiedDashboardPage = () => {
   const { user } = useAuth();
@@ -188,7 +210,7 @@ const UnifiedDashboardPage = () => {
       }
     } catch (err) {
       console.error("Dashboard fetch error:", err);
-      // toast.error("Failed to load dashboard metrics.");
+      toast.error("Failed to load dashboard metrics.");
     } finally {
       setLoading(false);
     }
@@ -200,10 +222,19 @@ const UnifiedDashboardPage = () => {
   });
 
   return (
-    <div className="space-y-8">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="space-y-8"
+    >
       {/* WELCOME BANNER (ALL ROLES) */}
-      <div className="bg-linear-to-r from-indigo-900 via-indigo-800 to-slate-900 rounded-2xl p-6 md:p-8 text-white shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div>
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="bg-linear-to-r from-indigo-900 via-indigo-800 to-slate-900 rounded-2xl p-6 md:p-8 text-white shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-6 overflow-hidden relative"
+      >
+        <div className="relative z-10">
           <div className="inline-flex items-center gap-2 bg-indigo-500/20 border border-indigo-400/30 px-3 py-1 rounded-full text-xs font-semibold text-indigo-200 mb-3">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
             Role: {userRole.replace("_", " ")}
@@ -219,7 +250,7 @@ const UnifiedDashboardPage = () => {
         </div>
 
         {/* Dynamic Context Buttons */}
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-3 relative z-10">
           {isAuthor && (
             <Link
               to="/authors/create-article"
@@ -259,15 +290,25 @@ const UnifiedDashboardPage = () => {
             </>
           )}
         </div>
-      </div>
+      </motion.div>
 
-      {/*  METRICS CARDS SECTION */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* METRICS CARDS SECTION */}
+      <motion.div
+        variants={containerStagger}
+        initial="hidden"
+        animate="visible"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+      >
         {/* --- ADMIN / SUPER ADMIN METRICS --- */}
         {isAdminOrSuperAdmin && (
           <>
             {/* Published Articles Metric */}
-            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
+            <motion.div
+              variants={fadeInUp}
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.2 }}
+              className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between"
+            >
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
                   Published Articles
@@ -294,10 +335,15 @@ const UnifiedDashboardPage = () => {
                   />
                 </svg>
               </div>
-            </div>
+            </motion.div>
 
             {/* Approved Authors Metric */}
-            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
+            <motion.div
+              variants={fadeInUp}
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.2 }}
+              className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between"
+            >
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
                   Approved Authors
@@ -324,10 +370,15 @@ const UnifiedDashboardPage = () => {
                   />
                 </svg>
               </div>
-            </div>
+            </motion.div>
 
             {/* Pending Articles Metric */}
-            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
+            <motion.div
+              variants={fadeInUp}
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.2 }}
+              className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between"
+            >
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
                   Pending Articles
@@ -336,11 +387,7 @@ const UnifiedDashboardPage = () => {
                   {loading ? "..." : stats.pendingArticles}
                 </h2>
                 <Link
-                  to={
-                    isSuperAdmin
-                      ? "/superadmin/articles"
-                      : "/admin/articles"
-                  }
+                  to={isSuperAdmin ? "/superadmin/articles" : "/admin/articles"}
                   className="text-xs font-medium text-amber-600 hover:text-amber-700 mt-2 inline-block"
                 >
                   Review queue &rarr;
@@ -361,11 +408,16 @@ const UnifiedDashboardPage = () => {
                   />
                 </svg>
               </div>
-            </div>
+            </motion.div>
 
             {/* Approved Admins / Pending Authors Dynamic Metric */}
             {isSuperAdmin ? (
-              <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
+              <motion.div
+                variants={fadeInUp}
+                whileHover={{ y: -4 }}
+                transition={{ duration: 0.2 }}
+                className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between"
+              >
                 <div>
                   <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
                     Approved Admins
@@ -392,9 +444,14 @@ const UnifiedDashboardPage = () => {
                     />
                   </svg>
                 </div>
-              </div>
+              </motion.div>
             ) : (
-              <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
+              <motion.div
+                variants={fadeInUp}
+                whileHover={{ y: -4 }}
+                transition={{ duration: 0.2 }}
+                className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between"
+              >
                 <div>
                   <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
                     Pending Authors
@@ -424,7 +481,7 @@ const UnifiedDashboardPage = () => {
                     />
                   </svg>
                 </div>
-              </div>
+              </motion.div>
             )}
           </>
         )}
@@ -432,7 +489,12 @@ const UnifiedDashboardPage = () => {
         {/* --- AUTHOR METRICS --- */}
         {isAuthor && (
           <>
-            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+            <motion.div
+              variants={fadeInUp}
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.2 }}
+              className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm"
+            >
               <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
                 Total Articles
               </p>
@@ -442,8 +504,14 @@ const UnifiedDashboardPage = () => {
               <span className="text-[11px] text-gray-400 mt-2 block">
                 All time submissions
               </span>
-            </div>
-            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+            </motion.div>
+
+            <motion.div
+              variants={fadeInUp}
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.2 }}
+              className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm"
+            >
               <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
                 Published
               </p>
@@ -453,8 +521,14 @@ const UnifiedDashboardPage = () => {
               <span className="text-[11px] text-emerald-600 font-medium mt-2 block">
                 Live for readers
               </span>
-            </div>
-            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+            </motion.div>
+
+            <motion.div
+              variants={fadeInUp}
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.2 }}
+              className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm"
+            >
               <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
                 Pending Review
               </p>
@@ -464,8 +538,14 @@ const UnifiedDashboardPage = () => {
               <span className="text-[11px] text-amber-600 font-medium mt-2 block">
                 In review queue
               </span>
-            </div>
-            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+            </motion.div>
+
+            <motion.div
+              variants={fadeInUp}
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.2 }}
+              className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm"
+            >
               <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
                 Rejected
               </p>
@@ -475,10 +555,10 @@ const UnifiedDashboardPage = () => {
               <span className="text-[11px] text-rose-600 font-medium mt-2 block">
                 Needs revision
               </span>
-            </div>
+            </motion.div>
           </>
         )}
-      </div>
+      </motion.div>
 
       {/* ================= ROLE-SPECIFIC CONTENT LAYOUT ================= */}
 
@@ -486,7 +566,12 @@ const UnifiedDashboardPage = () => {
       {isAdminOrSuperAdmin && (
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Approved Roles Directory Table */}
-          <div className="lg:col-span-2 bg-white rounded-2xl p-6 border border-gray-100 shadow-sm space-y-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+            className="lg:col-span-2 bg-white rounded-2xl p-6 border border-gray-100 shadow-sm space-y-6"
+          >
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-100">
               <div>
                 <h2 className="text-lg font-bold text-gray-900">
@@ -504,19 +589,35 @@ const UnifiedDashboardPage = () => {
                   ...(isSuperAdmin ? ["SUPER_ADMIN"] : []),
                   "ADMIN",
                   "AUTHOR",
-                ].map((role) => (
-                  <button
-                    key={role}
-                    onClick={() => setRoleFilter(role)}
-                    className={`px-3 py-1.5 text-xs font-bold rounded-lg transition ${
-                      roleFilter === role
-                        ? "bg-white text-indigo-600 shadow-sm"
-                        : "text-gray-500 hover:text-gray-800"
-                    }`}
-                  >
-                    {role === "ALL" ? "All" : role.replace("_", " ")}
-                  </button>
-                ))}
+                ].map((role) => {
+                  const isActive = roleFilter === role;
+                  return (
+                    <button
+                      key={role}
+                      onClick={() => setRoleFilter(role)}
+                      className={`relative px-3 py-1.5 text-xs font-bold rounded-lg transition cursor-pointer ${
+                        isActive
+                          ? "text-indigo-600"
+                          : "text-gray-500 hover:text-gray-800"
+                      }`}
+                    >
+                      {isActive && (
+                        <motion.div
+                          layoutId="activeFilterBg"
+                          className="absolute inset-0 bg-white rounded-lg shadow-xs"
+                          transition={{
+                            type: "spring",
+                            stiffness: 500,
+                            damping: 35,
+                          }}
+                        />
+                      )}
+                      <span className="relative z-10">
+                        {role === "ALL" ? "All" : role.replace("_", " ")}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -547,58 +648,69 @@ const UnifiedDashboardPage = () => {
                       </td>
                     </tr>
                   ) : (
-                    filteredApprovedMembers.map((member) => (
-                      <tr
-                        key={member.id}
-                        className="hover:bg-gray-50/50 transition"
-                      >
-                        <td className="py-3.5 px-2">
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center">
-                              {member.name ? member.name[0].toUpperCase() : "U"}
+                    <AnimatePresence mode="popLayout">
+                      {filteredApprovedMembers.map((member) => (
+                        <motion.tr
+                          key={member.id}
+                          initial={{ opacity: 0, y: 8 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.98 }}
+                          transition={{ duration: 0.2 }}
+                          className="hover:bg-gray-50/50 transition"
+                        >
+                          <td className="py-3.5 px-2">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center">
+                                {member.name ? member.name[0].toUpperCase() : "U"}
+                              </div>
+                              <div>
+                                <p className="font-semibold text-gray-900 text-xs">
+                                  {member.name}
+                                </p>
+                                <p className="text-[11px] text-gray-400">
+                                  {member.email}
+                                </p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="font-semibold text-gray-900 text-xs">
-                                {member.name}
-                              </p>
-                              <p className="text-[11px] text-gray-400">
-                                {member.email}
-                              </p>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="py-3.5 px-2">
-                          <span
-                            className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase border ${
-                              member.role === "SUPER_ADMIN"
-                                ? "bg-purple-50 text-purple-700 border-purple-100"
-                                : member.role === "ADMIN"
-                                ? "bg-indigo-50 text-indigo-700 border-indigo-100"
-                                : "bg-blue-50 text-blue-700 border-blue-100"
-                            }`}
-                          >
-                            {member.role.replace("_", " ")}
-                          </span>
-                        </td>
-                        <td className="py-3.5 px-2 text-xs text-gray-500">
-                          {member.joinedAt}
-                        </td>
-                        <td className="py-3.5 px-2 text-right">
-                          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                            {member.status}
-                          </span>
-                        </td>
-                      </tr>
-                    ))
+                          </td>
+                          <td className="py-3.5 px-2">
+                            <span
+                              className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase border ${
+                                member.role === "SUPER_ADMIN"
+                                  ? "bg-purple-50 text-purple-700 border-purple-100"
+                                  : member.role === "ADMIN"
+                                  ? "bg-indigo-50 text-indigo-700 border-indigo-100"
+                                  : "bg-blue-50 text-blue-700 border-blue-100"
+                              }`}
+                            >
+                              {member.role.replace("_", " ")}
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-2 text-xs text-gray-500">
+                            {member.joinedAt}
+                          </td>
+                          <td className="py-3.5 px-2 text-right">
+                            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                              {member.status}
+                            </span>
+                          </td>
+                        </motion.tr>
+                      ))}
+                    </AnimatePresence>
                   )}
                 </tbody>
               </table>
             </div>
-          </div>
+          </motion.div>
 
           {/* Quick Pending Previews Sidebar */}
-          <div className="space-y-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.3 }}
+            className="space-y-6"
+          >
             {/* Pending Authors Preview */}
             <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
               <div className="flex items-center justify-between mb-4">
@@ -606,11 +718,7 @@ const UnifiedDashboardPage = () => {
                   Pending Author Applicants
                 </h3>
                 <Link
-                  to={
-                    isSuperAdmin
-                      ? "/superadmin/authors"
-                      : "/admin/authors"
-                  }
+                  to={isSuperAdmin ? "/superadmin/authors" : "/admin/authors"}
                   className="text-xs text-indigo-600 font-semibold hover:underline"
                 >
                   View All
@@ -624,8 +732,10 @@ const UnifiedDashboardPage = () => {
               ) : (
                 <div className="space-y-3">
                   {recentPendingAuthors.map((author, index) => (
-                    <div
+                    <motion.div
                       key={author.id || author._id || index}
+                      whileHover={{ x: 3 }}
+                      transition={{ duration: 0.2 }}
                       className="p-3 bg-gray-50 rounded-xl border border-gray-100 flex justify-between items-center"
                     >
                       <div className="min-w-0 pr-2">
@@ -639,7 +749,7 @@ const UnifiedDashboardPage = () => {
                       <span className="text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded uppercase">
                         Pending
                       </span>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
               )}
@@ -652,11 +762,7 @@ const UnifiedDashboardPage = () => {
                   Pending Article Review
                 </h3>
                 <Link
-                  to={
-                    isSuperAdmin
-                      ? "/superadmin/articles"
-                      : "/admin/articles"
-                  }
+                  to={isSuperAdmin ? "/superadmin/articles" : "/admin/articles"}
                   className="text-xs text-indigo-600 font-semibold hover:underline"
                 >
                   View All
@@ -670,8 +776,10 @@ const UnifiedDashboardPage = () => {
               ) : (
                 <div className="space-y-3">
                   {recentPendingArticles.map((article, index) => (
-                    <div
+                    <motion.div
                       key={article.id || article._id || article.slug || index}
+                      whileHover={{ x: 3 }}
+                      transition={{ duration: 0.2 }}
                       className="p-3 bg-gray-50 rounded-xl border border-gray-100"
                     >
                       <p className="text-xs font-semibold text-gray-900 truncate">
@@ -685,18 +793,23 @@ const UnifiedDashboardPage = () => {
                           {article.category || "General"}
                         </span>
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
               )}
             </div>
-          </div>
+          </motion.div>
         </div>
       )}
 
       {/* 2. AUTHOR ONLY VIEW */}
       {isAuthor && (
-        <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm space-y-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+          className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm space-y-4"
+        >
           <div className="flex items-center justify-between pb-3 border-b border-gray-100">
             <div>
               <h2 className="text-lg font-bold text-gray-900">
@@ -727,12 +840,20 @@ const UnifiedDashboardPage = () => {
               </Link>
             </div>
           ) : (
-            <div className="divide-y divide-gray-100">
+            <motion.div
+              variants={containerStagger}
+              initial="hidden"
+              animate="visible"
+              className="divide-y divide-gray-100"
+            >
               {authorArticlesList.map((item, idx) => {
                 const status = (item.status || "PENDING").toUpperCase();
                 return (
-                  <div
+                  <motion.div
                     key={item.id || item._id || item.slug || idx}
+                    variants={fadeInUp}
+                    whileHover={{ x: 4 }}
+                    transition={{ duration: 0.2 }}
                     className="py-3.5 flex items-center justify-between gap-4"
                   >
                     <div>
@@ -757,14 +878,14 @@ const UnifiedDashboardPage = () => {
                     >
                       {status === "APPROVED" ? "PUBLISHED" : status}
                     </span>
-                  </div>
+                  </motion.div>
                 );
               })}
-            </div>
+            </motion.div>
           )}
-        </div>
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 };
 
