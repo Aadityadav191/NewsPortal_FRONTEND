@@ -185,17 +185,22 @@ const UnifiedDashboardPage = () => {
       } else if (isAuthor) {
         // Fetch personal articles for Author role
         const res = await getMyArticles();
-        const articlesList =
-          res?.data?.articles || res?.data || (Array.isArray(res) ? res : []);
+        const articlesList = Array.isArray(res?.data?.data)
+          ? res.data.data
+          : Array.isArray(res?.data)
+            ? res.data
+            : Array.isArray(res)
+              ? res
+              : [];
 
         const published = articlesList.filter((a) =>
-          ["APPROVED", "PUBLISHED"].includes((a.status || "").toUpperCase())
+          ["APPROVED", "PUBLISHED"].includes((a.status || "").toUpperCase()),
         ).length;
         const pending = articlesList.filter(
-          (a) => (a.status || "PENDING").toUpperCase() === "PENDING"
+          (a) => (a.status || "").toUpperCase() === "PENDING",
         ).length;
         const rejected = articlesList.filter(
-          (a) => (a.status || "").toUpperCase() === "REJECTED"
+          (a) => (a.status || "").toUpperCase() === "REJECTED",
         ).length;
 
         setStats((prev) => ({
@@ -205,7 +210,6 @@ const UnifiedDashboardPage = () => {
           myPendingArticles: pending,
           myRejectedArticles: rejected,
         }));
-
         setAuthorArticlesList(articlesList.slice(0, 5));
       }
     } catch (err) {
@@ -634,7 +638,10 @@ const UnifiedDashboardPage = () => {
                 <tbody className="divide-y divide-gray-50 text-sm">
                   {loading ? (
                     <tr>
-                      <td colSpan="4" className="text-center py-8 text-gray-400 text-xs">
+                      <td
+                        colSpan="4"
+                        className="text-center py-8 text-gray-400 text-xs"
+                      >
                         Loading approved members...
                       </td>
                     </tr>
@@ -661,7 +668,9 @@ const UnifiedDashboardPage = () => {
                           <td className="py-3.5 px-2">
                             <div className="flex items-center gap-3">
                               <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center">
-                                {member.name ? member.name[0].toUpperCase() : "U"}
+                                {member.name
+                                  ? member.name[0].toUpperCase()
+                                  : "U"}
                               </div>
                               <div>
                                 <p className="font-semibold text-gray-900 text-xs">
@@ -679,8 +688,8 @@ const UnifiedDashboardPage = () => {
                                 member.role === "SUPER_ADMIN"
                                   ? "bg-purple-50 text-purple-700 border-purple-100"
                                   : member.role === "ADMIN"
-                                  ? "bg-indigo-50 text-indigo-700 border-indigo-100"
-                                  : "bg-blue-50 text-blue-700 border-blue-100"
+                                    ? "bg-indigo-50 text-indigo-700 border-indigo-100"
+                                    : "bg-blue-50 text-blue-700 border-blue-100"
                               }`}
                             >
                               {member.role.replace("_", " ")}
@@ -787,7 +796,10 @@ const UnifiedDashboardPage = () => {
                       </p>
                       <div className="flex justify-between items-center mt-2">
                         <span className="text-[10px] text-gray-400">
-                          By {article.authorName || article.author?.name || "Author"}
+                          By{" "}
+                          {article.authorName ||
+                            article.author?.name ||
+                            "Author"}
                         </span>
                         <span className="text-[10px] font-bold bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded uppercase">
                           {article.category || "General"}
@@ -872,8 +884,8 @@ const UnifiedDashboardPage = () => {
                         status === "APPROVED" || status === "PUBLISHED"
                           ? "bg-emerald-50 text-emerald-700 border-emerald-100"
                           : status === "REJECTED"
-                          ? "bg-rose-50 text-rose-700 border-rose-100"
-                          : "bg-amber-50 text-amber-700 border-amber-100"
+                            ? "bg-rose-50 text-rose-700 border-rose-100"
+                            : "bg-amber-50 text-amber-700 border-amber-100"
                       }`}
                     >
                       {status === "APPROVED" ? "PUBLISHED" : status}

@@ -13,17 +13,25 @@ const MyArticlesPage = () => {
   }, []);
 
   const fetchArticles = async () => {
-    setLoading(true);
-    try {
-      const response = await getMyArticles();
-      setArticles(response.data?.articles || response.data || []);
-    } catch (err) {
-      console.error("Failed to fetch author articles:", err);
-      // toast.error("Failed to load your articles.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  setLoading(true);
+
+  try {
+    const response = await getMyArticles();
+
+    const articlesList = Array.isArray(response?.data?.data)
+      ? response.data.data
+      : Array.isArray(response?.data)
+      ? response.data
+      : [];
+
+    setArticles(articlesList);
+  } catch (err) {
+    console.error("Failed to fetch author articles:", err);
+    toast.error("Failed to load your articles.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Helper status filter check
   const filteredArticles = articles.filter((article) => {
